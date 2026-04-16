@@ -1,6 +1,6 @@
 # SportZone - E-commerce Esportivo
 
-> **Status:** Projeto Integrador
+> **Status:** Projeto Integrador N1
 
 O **SportZone** é uma plataforma Web Full-Stack para venda de artigos esportivos. O projeto adota uma **Arquitetura Event-Driven** para gerenciar o ciclo de vida dos pedidos, utilizando processamento assíncrono para garantir escalabilidade, resolvendo gargalos comuns de transações síncronas em e-commerces.
 
