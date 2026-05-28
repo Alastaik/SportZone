@@ -28,7 +28,7 @@ public class Pedido {
     @Column(nullable = false)
     private LocalDateTime dataPedido;
 
-    // Status atual do pedido (PENDENTE, CONFIRMADO, CANCELADO)
+    // Status atual controlado pela máquina de estados
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusPedido status;
@@ -54,13 +54,19 @@ public class Pedido {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Marca o pedido como confirmado
-    public void confirmar() {
-        this.status = StatusPedido.CONFIRMADO;
+    // Avança o pedido para o próximo estado da máquina de estados
+    // Fluxo: PROCESSANDO_PAGAMENTO → SEPARANDO_ESTOQUE → ENVIADO → ENTREGUE
+    public void avancarStatus() {
+        this.status = this.status.proximo();
     }
 
-    // Marca o pedido como cancelado
+    // Marca o pedido como cancelado (estado terminal)
     public void cancelar() {
+        if (!this.status.podeAvancar()) {
+            throw new IllegalStateException(
+                    "Pedido no status " + this.status + " não pode ser cancelado."
+            );
+        }
         this.status = StatusPedido.CANCELADO;
     }
 
