@@ -1,0 +1,27 @@
+# Configuração do SportZone Backend
+spring:
+  application:
+    name: sportzone-backend
+
+  # Conexão com PostgreSQL (container do docker-compose)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sportzone
+    username: admin
+    password: adminpassword
+    driver-class-name: org.postgresql.Driver
+
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update  # Cria/atualiza tabelas automaticamente (apenas dev)
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Kafka (mantido da N1)
+  kafka:
+    bootstrap-servers: localhost:9092
+
+server:
+  port: 8080
