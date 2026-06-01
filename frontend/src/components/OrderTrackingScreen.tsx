@@ -21,40 +21,40 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
   useEffect(() => {
-    // 1. Configuração do SockJS apontando para o endpoint do Spring Boot
+    // Configura SockJS
     const socket = new SockJS('http://localhost:8080/ws');
     
-    // 2. Configuração do Cliente STOMP
+    // Configura STOMP
     const stompClient = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000,
       onConnect: () => {
-        console.log('✅ Conectado ao WebSocket via STOMP');
+        console.log('[STOMP] Conectado ao WebSocket');
         
-        // 3. Inscrição no Tópico do Pedido Específico
+        // Inscreve no tópico do pedido
         stompClient.subscribe(`/topic/pedidos/${orderId}`, (message) => {
           if (message.body) {
             try {
               const data = JSON.parse(message.body);
               if (data.status && STATUS_ORDER.includes(data.status)) {
-                // Atualiza o estado local reativamente quando a mensagem do worker/kafka chega
+                // Atualiza estado local
                 setCurrentStatus(data.status as OrderStatus);
               }
             } catch (error) {
-              console.error('Erro ao fazer parse da mensagem WebSocket', error);
+              console.error('Erro no parse do WebSocket', error);
             }
           }
         });
       },
       onStompError: (frame) => {
-        console.error('Broker reportou erro: ' + frame.headers['message']);
+        console.error('Erro STOMP: ' + frame.headers['message']);
         console.error('Detalhes: ' + frame.body);
       },
     });
 
     stompClient.activate();
 
-    // Cleanup: Desconecta ao desmontar o componente
+    // Desconecta no unmount
     return () => {
       stompClient.deactivate();
     };
@@ -63,10 +63,8 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
   const handleSimulateCheckout = async () => {
     setIsProcessingCheckout(true);
     try {
-      // Dispara o HTTP POST (Retorna 202 Accepted)
+      // Dispara checkout
       await checkoutPedido({ orderId, items: [] });
-      // A UI não é atualizada aqui! 
-      // Ela reage apenas às mensagens do WebSocket garantindo fidelidade ao processamento real.
     } catch (error) {
       console.error('Erro no checkout', error);
     } finally {
@@ -74,22 +72,22 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
     }
   };
 
-  // Helper para definir as cores baseadas na posição atual do pedido
+  // Define cores baseadas no status
   const getTimelineColors = (status: OrderStatus, index: number) => {
     const currentIndex = STATUS_ORDER.indexOf(currentStatus);
     
     if (index < currentIndex) {
-      return 'text-[#10B981] border-[#10B981]'; // Passado: Verde (Entregue/Sucesso)
+      return 'text-[#10B981] border-[#10B981]'; // Concluído
     }
     if (index === currentIndex) {
-      return 'text-[#F97316] border-[#F97316] animate-pulse'; // Atual: Electric Orange + Pulsante
+      return 'text-[#F97316] border-[#F97316] animate-pulse'; // Atual
     }
-    return 'text-[#A1A1AA] border-[#27272A]'; // Futuro: Cinza (Muted)
+    return 'text-[#A1A1AA] border-[#27272A]'; // Futuro
   };
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] p-4 flex flex-col items-center justify-center font-sans">
-      {/* Container Principal (Painel) */}
+      {/* Painel principal */}
       <div className="w-full max-w-md bg-[#0F1115] border border-[#27272A] rounded-xl shadow-2xl p-6 sm:p-8">
         
         {/* Cabeçalho */}
@@ -102,7 +100,7 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
           </p>
         </div>
 
-        {/* Timeline Vertical */}
+        {/* Timeline */}
         <div className="relative border-l-2 border-[#27272A] ml-4 mb-10 space-y-10">
           {STATUS_ORDER.map((status, index) => {
             const isCompleted = index < STATUS_ORDER.indexOf(currentStatus);
@@ -110,7 +108,7 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
             
             return (
               <div key={status} className="relative pl-8">
-                {/* Indicador / Bolinha da Timeline */}
+                {/* Indicador */}
                 <span 
                   className={`absolute -left-[11px] top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#0F1115] border-2 transition-colors duration-500 ${getTimelineColors(status, index)}`}
                 >
@@ -123,7 +121,7 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
                   ) : null}
                 </span>
 
-                {/* Textos da Timeline */}
+                {/* Texto */}
                 <h3 className={`font-bold uppercase tracking-wide text-sm transition-colors duration-500 ${getTimelineColors(status, index).split(' ')[0]}`}>
                   {status.replace('_', ' ')}
                 </h3>
@@ -137,16 +135,16 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderI
           })}
         </div>
 
-        {/* Botão de Ação Primário (CTA) */}
+        {/* CTA */}
         <div className="mt-8 flex justify-center">
           <button 
             onClick={handleSimulateCheckout}
             disabled={isProcessingCheckout}
             className="group relative w-full bg-[#F97316] text-black font-black uppercase tracking-tighter skew-x-[-10deg] px-6 py-4 transition-all duration-200 hover:bg-[#EA580C] hover:-translate-y-1 shadow-[4px_4px_0px_0px_#27272A] hover:shadow-[6px_6px_0px_0px_#27272A] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#27272A] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {/* O texto interno sofre um skew invertido para ficar reto (legível) enquanto o botão fica inclinado */}
+            {/* Texto centralizado */}
             <span className="block skew-x-[10deg] tracking-wide">
-              {isProcessingCheckout ? 'Aguardando 202...' : 'Testar Checkout (Assíncrono)'}
+              {isProcessingCheckout ? 'Aguardando...' : 'Testar Checkout'}
             </span>
           </button>
         </div>
