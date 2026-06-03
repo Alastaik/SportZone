@@ -3,15 +3,17 @@ import { ProductCatalog } from './components/ProductCatalog';
 import { Cart, CartItem } from './components/Cart';
 import { OrderTrackingScreen } from './components/OrderTrackingScreen';
 import { Layout } from './components/Layout';
+import { Auth } from './components/Auth';
 import { Produto } from './services/api';
 import { Toaster, toast } from 'react-hot-toast';
 
-type View = 'catalog' | 'cart' | 'tracking';
+type View = 'catalog' | 'cart' | 'tracking' | 'auth';
 
 function App() {
   const [view, setView] = useState<View>('catalog');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [pedidoId, setPedidoId] = useState<string>('');
+  const [userName, setUserName] = useState<string | null>(null);
 
   const handleAdicionarCarrinho = (item: { produto: Produto; quantidade: number }) => {
     setCartItems((prev) => {
@@ -76,7 +78,9 @@ function App() {
     <Layout 
       cartItemCount={totalCartItems} 
       onCartClick={() => setView('cart')}
-      showCart={view === 'catalog'}
+      onAuthClick={() => setView('auth')}
+      userName={userName}
+      showCart={view !== 'auth'}
     >
       <Toaster position="bottom-right" />
       {view === 'catalog' && (
@@ -98,6 +102,25 @@ function App() {
         <OrderTrackingScreen 
           pedidoId={pedidoId} 
           onVoltar={() => setView('catalog')}
+        />
+      )}
+      {view === 'auth' && (
+        <Auth 
+          onLoginSuccess={(name) => {
+            setUserName(name);
+            setView('catalog');
+            toast.success(`Bem-vindo, ${name}!`, {
+              style: {
+                background: '#18181B',
+                color: '#FFFFFF',
+                border: '1px solid #27272A',
+              },
+              iconTheme: {
+                primary: '#10B981',
+                secondary: '#0F1115',
+              },
+            });
+          }}
         />
       )}
     </Layout>

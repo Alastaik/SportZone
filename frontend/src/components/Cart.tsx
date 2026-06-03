@@ -202,21 +202,29 @@ export const Cart: React.FC<CartProps> = ({
                   </label>
                 </div>
 
-                {/* GoF Strategy Badge Showcase */}
-                <div className="mt-4 p-4 rounded-lg bg-[#18181B] border border-[#27272A] flex gap-3">
-                  <Cpu className="h-5 w-5 text-[#3B82F6] shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-1">
-                      Arquitetura: Strategy Pattern
-                    </h4>
-                    <p className="text-[#71717A] text-xs font-mono leading-relaxed">
-                      Sua escolha determina a instância em runtime: <br />
-                      <span className="text-[#A1A1AA] font-bold">
-                        {metodoPagamento === 'PIX' ? 'new PixStrategy()' : 'new CartaoCreditoStrategy()'}
-                      </span>
-                    </p>
+                {metodoPagamento === 'CARTAO_CREDITO' && (
+                  <div className="mt-4 p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-3 animate-in fade-in slide-in-from-top-2">
+                    <div>
+                      <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Número do Cartão</label>
+                      <input type="text" placeholder="0000 0000 0000 0000" className="w-full bg-[#0F1115] border border-[#27272A] rounded-lg p-2.5 text-white outline-none focus:border-[#F97316] transition-colors font-mono text-sm" maxLength={19} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Nome no Cartão</label>
+                      <input type="text" placeholder="NOME IMPRESSO" className="w-full bg-[#0F1115] border border-[#27272A] rounded-lg p-2.5 text-white outline-none focus:border-[#F97316] transition-colors text-sm uppercase" />
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">Validade</label>
+                        <input type="text" placeholder="MM/AA" className="w-full bg-[#0F1115] border border-[#27272A] rounded-lg p-2.5 text-white outline-none focus:border-[#F97316] transition-colors font-mono text-sm" maxLength={5} />
+                      </div>
+                      <div className="flex-1">
+                        <label className="block text-xs font-bold text-[#A1A1AA] uppercase tracking-wider mb-1">CVV</label>
+                        <input type="text" placeholder="123" className="w-full bg-[#0F1115] border border-[#27272A] rounded-lg p-2.5 text-white outline-none focus:border-[#F97316] transition-colors font-mono text-sm" maxLength={4} />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
+
               </div>
 
               <button
