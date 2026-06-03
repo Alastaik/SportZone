@@ -27,7 +27,7 @@ public class DataSeeder implements CommandLineRunner {
         log.info("[SEED] Inserindo produtos iniciais...");
 
         produtoRepository.save(Produto.builder()
-                .nome("Tênis Runner Pro X1")
+                .nome("Tênis esportivo")
                 .descricao("Tênis de corrida com amortecimento em gel e solado de carbono para máxima performance.")
                 .preco(new BigDecimal("499.90"))
                 .categoria("Calçados")
@@ -36,7 +36,7 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
 
         produtoRepository.save(Produto.builder()
-                .nome("Camisa Oficial Brasil 2026")
+                .nome("Camisa Seleção")
                 .descricao("Camisa oficial da seleção brasileira com tecnologia Dri-Fit e tecido respirável.")
                 .preco(new BigDecimal("349.90"))
                 .categoria("Camisas")
@@ -45,8 +45,8 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
 
         produtoRepository.save(Produto.builder()
-                .nome("Bola Futebol Pro Match")
-                .descricao("Bola de futebol profissional com costura térmica e aprovação FIFA Quality Pro.")
+                .nome("Bola de Basquete")
+                .descricao("Bola de basquete profissional aprovada pela federação internacional.")
                 .preco(new BigDecimal("199.90"))
                 .categoria("Acessórios")
                 .marca("SportZone")
@@ -54,7 +54,7 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
 
         produtoRepository.save(Produto.builder()
-                .nome("Short Training Elite")
+                .nome("Short esportivo")
                 .descricao("Short de treino com tecnologia UV Protection e bolsos laterais com zíper.")
                 .preco(new BigDecimal("129.90"))
                 .categoria("Vestuário")
@@ -63,8 +63,8 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
 
         produtoRepository.save(Produto.builder()
-                .nome("Mochila Sport 40L")
-                .descricao("Mochila esportiva com compartimento para chuteiras, garrafa e notebook 15\".")
+                .nome("Mochila esportiva")
+                .descricao("Mochila esportiva com compartimento para garrafa e notebook.")
                 .preco(new BigDecimal("249.90"))
                 .categoria("Acessórios")
                 .marca("SportZone")
@@ -72,7 +72,7 @@ public class DataSeeder implements CommandLineRunner {
                 .build());
 
         produtoRepository.save(Produto.builder()
-                .nome("Meias Compressão Pro")
+                .nome("Meias esportivas")
                 .descricao("Meias de compressão graduada para melhor circulação e recuperação muscular.")
                 .preco(new BigDecimal("59.90"))
                 .categoria("Acessórios")

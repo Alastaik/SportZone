@@ -15,6 +15,17 @@ interface CartProps {
   onCheckoutSuccess: (pedidoId: string) => void;
 }
 
+const PRODUCT_IMAGES: Record<string, string> = {
+  'Tênis esportivo': '/images/Tenis_Esportivo.jpg',
+  'Camisa Seleção': '/images/Camisa_Seleção.jpg',
+  'Mochila esportiva': '/images/Mochila_esportiva.jpg',
+  'Bola de Basquete': '/images/Bola_basquete.jpg',
+  'Short esportivo': '/images/Short_Esportivo.jpg',
+  'Meias esportivas': '/images/Meia_esportiva.jpg',
+};
+
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&q=80&w=800';
+
 export const Cart: React.FC<CartProps> = ({
   itens,
   onUpdateQuantidade,
@@ -75,14 +86,25 @@ export const Cart: React.FC<CartProps> = ({
             itens.map((item) => (
               <div
                 key={item.produto.id}
-                className="bg-[#0F1115] border border-[#27272A] rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors hover:border-[#3F3F46]"
+                className="bg-[#0F1115] border border-[#27272A] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors hover:border-[#3F3F46]"
               >
-                <div className="flex-1">
-                  <h3 className="text-[#FFFFFF] font-bold text-lg">{item.produto.nome}</h3>
-                  <p className="text-[#A1A1AA] text-sm mt-1">{item.produto.categoria}</p>
+                {/* Thumb + Title */}
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-white/5 shrink-0 border border-[#27272A] p-2 flex items-center justify-center">
+                    <img 
+                      src={PRODUCT_IMAGES[item.produto.nome] || DEFAULT_IMAGE} 
+                      alt={item.produto.nome} 
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-[#FFFFFF] font-bold text-lg line-clamp-1">{item.produto.nome}</h3>
+                    <p className="text-[#A1A1AA] text-xs uppercase tracking-widest mt-1">{item.produto.categoria}</p>
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-6 justify-between sm:justify-end">
+                {/* Controls */}
+                <div className="flex items-center gap-6 justify-between sm:justify-end pl-20 sm:pl-0">
                   <div className="flex items-center bg-[#18181B] rounded-lg border border-[#27272A]">
                     <button
                       onClick={() => onUpdateQuantidade(item.produto.id, -1)}
@@ -124,7 +146,7 @@ export const Cart: React.FC<CartProps> = ({
             <div className="bg-[#0F1115] border border-[#27272A] rounded-2xl p-6 sticky top-24">
               <h2 className="text-xl font-black uppercase tracking-tight mb-6">Resumo</h2>
               
-              <div className="flex justify-between items-center mb-6 text-lg">
+              <div className="flex justify-between items-center mb-6 text-lg border-b border-[#27272A] pb-6">
                 <span className="text-[#A1A1AA] font-medium">Total:</span>
                 <span className="text-[#FFFFFF] font-black text-2xl">
                   R$ {valorTotal.toFixed(2).replace('.', ',')}
@@ -146,7 +168,7 @@ export const Cart: React.FC<CartProps> = ({
                   >
                     <div className="flex items-center gap-3">
                       <QrCode className="h-5 w-5" />
-                      <span className="font-bold">PIX (5% off)</span>
+                      <span className="font-bold">PIX</span>
                     </div>
                     <input
                       type="radio"

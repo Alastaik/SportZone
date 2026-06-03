@@ -30,6 +30,16 @@ Todos os documentos teóricos e de design exigidos estão centralizados neste re
 
 ---
 
+## Funcionalidades de UI/UX (Frontend)
+- **Design System Premium:** Tipografia e paleta de cores escuras/vibrantes estabelecidas.
+- **Header Dinâmico:** Logo customizada via CSS puro e um Hero Banner imersivo com *fade-out* (fundo cinematográfico).
+- **Busca em Tempo Real:** Filtro imediato de produtos por nome e categoria.
+- **Feedback Interativo:** Uso de *toast notifications* para interações como adição ao carrinho.
+- **Catálogo Animado:** Marquee de produtos com efeito de rolagem infinita.
+- **Compra Rápida:** Botão para pular o carrinho e ir direto ao checkout.
+
+---
+
 ## Padrões de Projeto (Design Patterns)
 
 Para garantir um código limpo, testável e aderente aos princípios SOLID (especialmente Open/Closed Principle e Single Responsibility), aplicamos Padrões de Projeto bem definidos e de fácil localização no código-fonte:

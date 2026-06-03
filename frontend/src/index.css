@@ -7,3 +7,8 @@
     @apply bg-[#0A0A0A] text-white antialiased;
   }
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}

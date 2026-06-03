@@ -4,6 +4,7 @@ import { Cart, CartItem } from './components/Cart';
 import { OrderTrackingScreen } from './components/OrderTrackingScreen';
 import { Layout } from './components/Layout';
 import { Produto } from './services/api';
+import { Toaster, toast } from 'react-hot-toast';
 
 type View = 'catalog' | 'cart' | 'tracking';
 
@@ -23,6 +24,18 @@ function App() {
         );
       }
       return [...prev, item];
+    });
+    
+    toast.success(`${item.produto.nome} adicionado!`, {
+      style: {
+        background: '#18181B',
+        color: '#FFFFFF',
+        border: '1px solid #27272A',
+      },
+      iconTheme: {
+        primary: '#10B981',
+        secondary: '#0F1115',
+      },
     });
   };
 
@@ -48,7 +61,16 @@ function App() {
     setView('tracking');
   };
 
+  const handleComprar = (item: { produto: Produto; quantidade: number }) => {
+    handleAdicionarCarrinho(item);
+    setView('cart');
+  };
+
   const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantidade, 0);
+
+  if (view === 'tracking') {
+    return <OrderTrackingScreen pedidoId={pedidoId} onVoltar={() => setView('catalog')} />;
+  }
 
   return (
     <Layout 
@@ -56,9 +78,11 @@ function App() {
       onCartClick={() => setView('cart')}
       showCart={view === 'catalog'}
     >
+      <Toaster position="bottom-right" />
       {view === 'catalog' && (
         <ProductCatalog 
           onAdicionarCarrinho={handleAdicionarCarrinho} 
+          onComprar={handleComprar}
         />
       )}
       {view === 'cart' && (

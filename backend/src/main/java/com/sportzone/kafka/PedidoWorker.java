@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.UUID;
 
-// Worker assíncrono que consome eventos do Kafka e processa pedidos em background
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -21,37 +20,36 @@ public class PedidoWorker {
     private final PedidoService pedidoService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    // Escuta o tópico e processa cada evento de pedido criado
     @KafkaListener(topics = KafkaConfig.TOPICO_PEDIDOS, groupId = "sportzone-group")
     public void processarPedido(PedidoCriadoEvent evento) {
         log.info("[WORKER] Evento recebido — Pedido: {}", evento.pedidoId());
 
         try {
-            // 1. Processar pagamento via Strategy e avançar status
+            // Pagamento via Strategy
             log.info("[WORKER] Processando pagamento...");
             pedidoService.processarPagamento(evento);
             notificarFrontend(evento.pedidoId(), "SEPARANDO_ESTOQUE");
-            simularProcessamento(2000); // Simula tempo de processamento do gateway
+            simularProcessamento(2000); 
 
-            // 2. Avançar para ENVIADO
+            // Despacho
             log.info("[WORKER] Despachando pedido...");
             pedidoService.avancarStatus(evento.pedidoId());
             notificarFrontend(evento.pedidoId(), "ENVIADO");
-            simularProcessamento(3000); // Simula tempo de despacho
+            simularProcessamento(3000); 
 
-            // 3. Avançar para ENTREGUE
+            // Entrega
             log.info("[WORKER] Confirmando entrega...");
             pedidoService.avancarStatus(evento.pedidoId());
             notificarFrontend(evento.pedidoId(), "ENTREGUE");
 
-            log.info("[WORKER] Pedido {} processado com sucesso — Status final: ENTREGUE", evento.pedidoId());
+            log.info("[WORKER] Pedido {} processado com sucesso", evento.pedidoId());
 
         } catch (Exception e) {
             log.error("[WORKER] Erro ao processar pedido {}: {}", evento.pedidoId(), e.getMessage(), e);
         }
     }
 
-    // Envia atualização de status via WebSocket STOMP para o frontend
+    // Broadcast WebSocket STOMP
     private void notificarFrontend(UUID pedidoId, String status) {
         String destino = "/topic/pedidos/" + pedidoId;
         Map<String, String> payload = Map.of(
@@ -62,7 +60,6 @@ public class PedidoWorker {
         log.info("[WORKER] WebSocket enviado — {} → {}", destino, status);
     }
 
-    // Simula tempo de processamento assíncrono (em produção, seriam chamadas reais)
     private void simularProcessamento(long millis) {
         try {
             Thread.sleep(millis);
