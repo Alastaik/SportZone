@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação Executiva — SportZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #F97316; /* Laranja vibrante */
+            --primary-dark: #C2410C;
+            --bg-dark: #09090B;
+            --surface: #18181B;
+            --surface-light: #27272A;
+            --text-light: #FAFAFA;
+            --text-muted: #A1A1AA;
+            --accent: #38BDF8;
+            --success: #22C55E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* HEADER & HERO */
+        header {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(9, 9, 11, 1) 100%);
+            border-bottom: 1px solid var(--surface-light);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* LAYOUT & SECTIONS */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            background: var(--surface);
+            border: 1px solid var(--surface-light);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--surface-light);
+            padding-bottom: 15px;
+        }
+
+        .section-number {
+            background: var(--primary);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 25px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: var(--text-muted);
+        }
+
+        /* GRID & CARDS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--surface-light);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .card.accent {
+            border-left-color: var(--accent);
+        }
+        
+        .card.success {
+            border-left-color: var(--success);
+        }
+
+        .card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        /* CODE BLOCKS */
+        pre {
+            background: #000000;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid var(--surface-light);
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: Consolas, Monaco, monospace;
+            color: var(--accent);
+        }
+        
+        .keyword { color: #C678DD; }
+        .string { color: #98C379; }
+        .type { color: #E5C07B; }
+
+        /* IMAGES */
+        .image-wrapper {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-wrapper img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--surface-light);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .image-caption {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* HIGHLIGHTS */
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--surface-light);
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="hero-title">SportZone</h1>
+        <p class="hero-subtitle">Plataforma de E-commerce Esportivo de Alta Performance.<br>Arquitetura, Design e Engenharia de Qualidade.</p>
+    </header>
+
+    <div class="container">
+
+        <!-- SEÇÃO 1: UX/UI -->
+        <section>
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2>Design System & Usabilidade</h2>
+            </div>
+            <p>A identidade visual da SportZone foi concebida para transmitir <strong>energia, foco e profissionalismo</strong>. O sistema adota uma paleta <em>Dark Mode</em> complementada por um Laranja Vibrante, atraindo a atenção do usuário para as <em>Call To Actions</em> principais.</p>
+            
+            <div style="display: flex; gap: 15px; margin: 25px 0;">
+                <div style="flex: 1; padding: 15px; border-radius: 8px; background-color: #F97316; color: #000; text-align: center; font-weight: bold;">
+                    Laranja Primário<br><small style="font-weight: normal;">#F97316</small>
+                </div>
+                <div style="flex: 1; padding: 15px; border-radius: 8px; background-color: #09090B; color: #FFF; text-align: center; border: 1px solid #27272A; font-weight: bold;">
+                    Fundo Dark<br><small style="font-weight: normal;">#09090B</small>
+                </div>
+                <div style="flex: 1; padding: 15px; border-radius: 8px; background-color: #27272A; color: #FFF; text-align: center; font-weight: bold;">
+                    Superfícies<br><small style="font-weight: normal;">#27272A</small>
+                </div>
+                <div style="flex: 1; padding: 15px; border-radius: 8px; background-color: #22C55E; color: #000; text-align: center; font-weight: bold;">
+                    Sucesso (Feedback)<br><small style="font-weight: normal;">#22C55E</small>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4>Componentização e Reaproveitamento</h4>
+                    <p style="margin: 0; font-size: 0.95rem;">
+                        Toda a interface foi construída baseada na reutilização de componentes puros (HTML semântico e CSS). Os botões do e-commerce compartilham a mesma base visual, utilizando classes utilitárias. Os cards de produtos do <em>Grid</em> são renderizados dinamicamente a partir de um único template reutilizável, garantindo coesão visual máxima em todas as telas.
+                    </p>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <div style="padding: 10px 20px; background-color: #F97316; color: #000; border-radius: 6px; font-weight: bold; font-size: 0.9rem; text-align: center; flex: 1;">Btn Primário</div>
+                        <div style="padding: 10px 20px; background-color: transparent; color: #F97316; border: 1px solid #F97316; border-radius: 6px; font-weight: bold; font-size: 0.9rem; text-align: center; flex: 1;">Btn Secundário</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>Feedback em Tempo Real</h4>
+                    <p style="margin: 0; font-size: 0.95rem;">Para garantir uma excelente usabilidade (UX), o sistema atualiza o status do pedido em tempo real através de <strong>WebSockets</strong>. Micro-animações e mudanças de cor informam ao cliente o momento exato em que o pagamento é aprovado e o produto é despachado, sem recarregar a página.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: ARQUITETURA -->
+        <section>
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2>Arquitetura e Implementação</h2>
+            </div>
+            <p>O projeto segue uma arquitetura baseada em divisão de responsabilidades, separando rigidamente o cliente (Frontend) da lógica de negócios (Backend). A justificativa dessa escolha reside na <strong>escalabilidade</strong>: podemos evoluir o app Web sem impactar os serviços de pagamento.</p>
+
+            <h3>Backend Robusto (Spring Boot)</h3>
+            <p>Desenvolvido em Java 21 com Spring Boot 3. A estrutura do código é fortemente baseada no padrão MVC interno (Controller, Service, Repository), isolando a lógica de Domínio e garantindo que o acoplamento seja mantido no mínimo.</p>
+
+            <h3>Frontend Dinâmico (Vanilla JS / Vite)</h3>
+            <p>A interface foi construída visando performance máxima. Ao invés de pesados frameworks de SPA para uma loja simples, foi utilizado Vite com Vanilla JS. O DOM é manipulado apenas quando necessário, garantindo que a renderização de centenas de produtos seja perfeitamente fluida.</p>
+        </section>
+
+        <!-- SEÇÃO 3: DESIGN PATTERNS -->
+        <section>
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2>Qualidade de Código: Padrão Strategy</h2>
+            </div>
+            <p>Para o processamento de pagamentos, a escolha arquitetural foi o padrão comportamental <strong>Strategy</strong>. Ele nos permite introduzir novos métodos de pagamento (como Boleto ou Criptomoedas) sem modificar o serviço principal de pedidos, obedecendo ao princípio <span class="highlight">Open/Closed (OCP)</span> do SOLID.</p>
+            
+            <pre><code><span class="type">@Component</span>
+<span class="keyword">public class</span> PagamentoStrategyFactory {
+    
+    <span class="keyword">private final</span> Map&lt;MetodoPagamento, PagamentoStrategy&gt; <span class="string">strategies</span>;
+
+    <span class="type">@Autowired</span>
+    <span class="keyword">public</span> PagamentoStrategyFactory(List&lt;PagamentoStrategy&gt; strategyList) {
+        strategies = <span class="keyword">new</span> EnumMap&lt;&gt;(MetodoPagamento.class);
+        <span class="keyword">for</span> (PagamentoStrategy strategy : strategyList) {
+            strategies.put(strategy.getMetodo(), strategy);
+        }
+    }
+    
+    <span class="keyword">public</span> PagamentoStrategy getStrategy(MetodoPagamento metodo) {
+        <span class="keyword">return</span> strategies.get(metodo);
+    }
+}</code></pre>
+            <p>A injeção dinâmica no construtor faz com que qualquer nova classe que implemente <code>PagamentoStrategy</code> seja automaticamente registrada pelo Spring, eliminando longos blocos de <code>if-else</code> ou <code>switch-case</code>.</p>
+        </section>
+
+        <!-- SEÇÃO 4: MENSAGERIA ASSÍNCRONA -->
+        <section>
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2>Processamento Assíncrono com Apache Kafka</h2>
+            </div>
+            <p>O fluxo de compra tradicional costuma ser bloqueante. Na SportZone, decidimos por uma abordagem <strong>Event-Driven (Orientada a Eventos)</strong>.</p>
+            
+            <div class="grid-2">
+                <div class="card accent">
+                    <h4>Produtor (PedidoProducer)</h4>
+                    <p style="margin: 0; font-size: 0.95rem;">Quando o cliente finaliza o checkout, o PedidoService apenas salva o estado inicial no banco e emite o evento <code>PedidoCriadoEvent</code> para o tópico do Kafka. O retorno para o frontend é imediato (non-blocking).</p>
+                </div>
+                <div class="card accent">
+                    <h4>Consumidor (PedidoWorker)</h4>
+                    <p style="margin: 0; font-size: 0.95rem;">Em background, o Worker intercepta o evento, delega para o Factory processar o pagamento via <em>Strategy</em>, simula a separação de estoque de forma isolada, e envia as notificações de sucesso via WebSocket para a interface gráfica.</p>
+                </div>
+            </div>
+            <p style="margin-top: 20px;">Esta escolha garante <strong>resiliência</strong>. Se o serviço de pagamentos ficar lento ou fora do ar, o sistema não perde o pedido. A mensagem continua na fila do Kafka aguardando o sistema se recuperar.</p>
+        </section>
+
+        <!-- SEÇÃO 5: TESTES E QUALIDADE -->
+        <section>
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2>Garantia de Qualidade (QA) e Cobertura</h2>
+            </div>
+            <p>O plano de testes foi meticulosamente desenhado para focar estritamente nas regras de negócio. Ignoramos propositalmente DTOs, Entidades anêmicas e Getters/Setters auto-gerados (Lombok), focando nossos esforços nos algoritmos core.</p>
+
+            <div class="grid-2">
+                <div class="card success">
+                    <h4>Testes Unitários (Mockito)</h4>
+                    <p style="margin: 0; font-size: 0.95rem;">As Factories e as Strategies foram validadas em completo isolamento, garantindo 100% de cobertura nos algoritmos de cálculo e seleção dinâmica.</p>
+                </div>
+                <div class="card success">
+                    <h4>Testes de Integração</h4>
+                    <p style="margin: 0; font-size: 0.95rem;">Utilizamos <code>@EmbeddedKafka</code> para instanciar um broker em memória durante o build. O teste end-to-end comprova o envio pelo Producer e o consumo perfeito pelo Worker.</p>
+                </div>
+            </div>
+
+            <div class="image-wrapper">
+                <img src="jacoco.jpg" alt="Print Oficial de Cobertura JaCoCo">
+                <div class="image-caption">Figura 1: Evidência do sumário de cobertura de código do SportZone Backend (JaCoCo). Pacotes críticos de estratégia e infraestrutura apresentam alta taxa de validação.</div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SportZone E-commerce Platform. Todos os direitos reservados.</p>
+        <p>Desenvolvido com foco absoluto na experiência do usuário e na excelência de engenharia de software.</p>
+    </footer>
+
+</body>
+</html>
