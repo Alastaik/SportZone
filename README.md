@@ -58,7 +58,7 @@ O fluxo do Pedido obedece a uma máquina de estados rigorosa: `PROCESSANDO_PAGAM
 Na raiz do projeto, suba os containers do PostgreSQL e do Apache Kafka executando o comando `docker-compose up -d` no seu terminal. Aguarde para que o broker do Kafka inicialize corretamente.
 
 ### Passo 2: Iniciar o Backend (Spring Boot)
-Abra um novo terminal, navegue até a pasta do backend (`cd backend`) e inicie a aplicação executando `mvn spring-boot:run` (ou `./mvnw spring-boot:run`). A API estará rodando em `http://localhost:8080`.
+Abra um novo terminal, navegue até a pasta do backend (`cd backend`) e inicie a aplicação executando `mvn spring-boot:run` (ou `./mvnw spring-boot:run`). A API estará rodando em `http://localhost:8081`.
 
 ### Passo 3: Iniciar o Frontend (React)
 Abra outro terminal, navegue até a pasta do frontend (`cd frontend`), instale as dependências com `npm install` e inicie o servidor com `npm run dev`. O Frontend estará acessível em `http://localhost:5173`.

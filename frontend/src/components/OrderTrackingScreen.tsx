@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { checkoutPedido } from '../services/api';
+// @ts-ignore
+import SockJS from 'sockjs-client/dist/sockjs';
+import { ArrowLeft, CheckCircle2, CircleDashed, Check } from 'lucide-react';
+
+interface OrderTrackingScreenProps {
+  pedidoId: string;
+  onVoltar: () => void;
+}
 
 type OrderStatus = 'PROCESSANDO_PAGAMENTO' | 'SEPARANDO_ESTOQUE' | 'ENVIADO' | 'ENTREGUE';
 
@@ -9,145 +15,139 @@ const STATUS_ORDER: OrderStatus[] = [
   'PROCESSANDO_PAGAMENTO',
   'SEPARANDO_ESTOQUE',
   'ENVIADO',
-  'ENTREGUE'
+  'ENTREGUE',
 ];
 
-interface OrderTrackingScreenProps {
-  orderId?: string;
-}
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  PROCESSANDO_PAGAMENTO: 'Processando Pagamento',
+  SEPARANDO_ESTOQUE: 'Separando Estoque',
+  ENVIADO: 'Enviado',
+  ENTREGUE: 'Entregue',
+};
 
-export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({ orderId = 'PEDIDO-999' }) => {
+export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({
+  pedidoId,
+  onVoltar,
+}) => {
   const [currentStatus, setCurrentStatus] = useState<OrderStatus>('PROCESSANDO_PAGAMENTO');
-  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Configura SockJS
-    const socket = new SockJS('http://localhost:8080/ws');
-    
-    // Configura STOMP
+    const socket = new SockJS('http://localhost:8081/ws');
     const stompClient = new Client({
       webSocketFactory: () => socket,
-      reconnectDelay: 5000,
+      debug: (str) => console.log(str),
       onConnect: () => {
-        console.log('[STOMP] Conectado ao WebSocket');
-        
-        // Inscreve no tópico do pedido
-        stompClient.subscribe(`/topic/pedidos/${orderId}`, (message) => {
-          if (message.body) {
-            try {
-              const data = JSON.parse(message.body);
-              if (data.status && STATUS_ORDER.includes(data.status)) {
-                // Atualiza estado local
-                setCurrentStatus(data.status as OrderStatus);
-              }
-            } catch (error) {
-              console.error('Erro no parse do WebSocket', error);
+        console.log('Conectado ao WebSocket');
+        stompClient.subscribe(`/topic/pedidos/${pedidoId}`, (message) => {
+          try {
+            const data = JSON.parse(message.body);
+            if (data.status) {
+              setCurrentStatus(data.status as OrderStatus);
             }
+          } catch (e) {
+            console.error('Erro ao fazer parse da mensagem WebSocket', e);
           }
         });
       },
       onStompError: (frame) => {
-        console.error('Erro STOMP: ' + frame.headers['message']);
-        console.error('Detalhes: ' + frame.body);
+        console.error('Erro no STOMP: ' + frame.headers['message']);
+        setError('Falha de conexão com o rastreamento em tempo real.');
       },
     });
 
     stompClient.activate();
 
-    // Desconecta no unmount
     return () => {
       stompClient.deactivate();
     };
-  }, [orderId]);
+  }, [pedidoId]);
 
-  const handleSimulateCheckout = async () => {
-    setIsProcessingCheckout(true);
-    try {
-      // Dispara checkout
-      await checkoutPedido({ orderId, items: [] });
-    } catch (error) {
-      console.error('Erro no checkout', error);
-    } finally {
-      setIsProcessingCheckout(false);
-    }
-  };
-
-  // Define cores baseadas no status
-  const getTimelineColors = (status: OrderStatus, index: number) => {
+  const getTimelineColors = (_status: OrderStatus, index: number) => {
     const currentIndex = STATUS_ORDER.indexOf(currentStatus);
-    
-    if (index < currentIndex) {
-      return 'text-[#10B981] border-[#10B981]'; // Concluído
+
+    if (index < currentIndex || (currentStatus === 'ENTREGUE' && index === currentIndex)) {
+      return 'text-[#10B981] border-[#10B981]';
     }
     if (index === currentIndex) {
-      return 'text-[#F97316] border-[#F97316] animate-pulse'; // Atual
+      return 'text-[#F97316] border-[#F97316]';
     }
-    return 'text-[#A1A1AA] border-[#27272A]'; // Futuro
+    return 'text-[#3F3F46] border-[#27272A]';
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] p-4 flex flex-col items-center justify-center font-sans">
-      {/* Painel principal */}
-      <div className="w-full max-w-md bg-[#0F1115] border border-[#27272A] rounded-xl shadow-2xl p-6 sm:p-8">
+    <div className="animate-in zoom-in-95 duration-500 flex flex-col items-center justify-center py-10">
+      <div className="w-full max-w-md bg-[#0F1115] border border-[#27272A] rounded-2xl shadow-2xl p-8">
         
         {/* Cabeçalho */}
-        <div className="mb-8 border-b border-[#27272A] pb-6">
-          <h1 className="text-[#FFFFFF] text-3xl font-black uppercase tracking-tighter skew-x-[-10deg]">
+        <div className="mb-10 text-center border-b border-[#27272A]/50 pb-8">
+          <h1 className="text-[#FFFFFF] text-2xl font-black uppercase tracking-tighter">
             Status do <span className="text-[#F97316]">Pedido</span>
           </h1>
-          <p className="text-[#A1A1AA] font-medium mt-2 text-sm uppercase">
-            ID: {orderId}
+          <p className="text-[#A1A1AA] bg-[#18181B] inline-block px-3 py-1 rounded-md font-mono mt-3 text-xs uppercase tracking-wider border border-[#27272A]">
+            {pedidoId.split('-')[0]}
           </p>
         </div>
 
+        {error && (
+          <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium text-center">
+            {error}
+          </div>
+        )}
+
         {/* Timeline */}
-        <div className="relative border-l-2 border-[#27272A] ml-4 mb-10 space-y-10">
+        <div className="relative border-l-2 border-[#27272A] ml-5 mb-12 space-y-12">
           {STATUS_ORDER.map((status, index) => {
-            const isCompleted = index < STATUS_ORDER.indexOf(currentStatus);
-            const isCurrent = index === STATUS_ORDER.indexOf(currentStatus);
-            
+            const isCompleted = index < STATUS_ORDER.indexOf(currentStatus) || (currentStatus === 'ENTREGUE' && index === STATUS_ORDER.indexOf(currentStatus));
+            const isCurrent = index === STATUS_ORDER.indexOf(currentStatus) && currentStatus !== 'ENTREGUE';
+
             return (
-              <div key={status} className="relative pl-8">
-                {/* Indicador */}
-                <span 
-                  className={`absolute -left-[11px] top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#0F1115] border-2 transition-colors duration-500 ${getTimelineColors(status, index)}`}
+              <div key={status} className="relative pl-10">
+                {/* Node indicator */}
+                <div
+                  className={`absolute -left-[17px] top-0 flex h-8 w-8 items-center justify-center rounded-full bg-[#0F1115] border-2 transition-all duration-700 ${getTimelineColors(status, index)} ${isCurrent ? 'shadow-[0_0_15px_rgba(249,115,22,0.4)]' : ''}`}
                 >
                   {isCompleted ? (
-                    <svg className="w-3 h-3 text-[#10B981]" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <Check className="h-4 w-4" strokeWidth={3} />
                   ) : isCurrent ? (
-                    <span className="h-2 w-2 rounded-full bg-[#F97316]"></span>
+                    <div className="h-3 w-3 rounded-full bg-[#F97316] animate-pulse"></div>
                   ) : null}
-                </span>
+                </div>
 
-                {/* Texto */}
-                <h3 className={`font-bold uppercase tracking-wide text-sm transition-colors duration-500 ${getTimelineColors(status, index).split(' ')[0]}`}>
-                  {status.replace('_', ' ')}
-                </h3>
-                {isCurrent && (
-                  <p className="text-[#A1A1AA] text-xs mt-1.5 font-medium animate-pulse">
-                    Atualizando status em tempo real...
-                  </p>
-                )}
+                {/* Text content */}
+                <div className={`transition-all duration-500 ${isCompleted ? 'opacity-100' : isCurrent ? 'opacity-100' : 'opacity-40'}`}>
+                  <h3 className={`font-black uppercase tracking-widest text-sm ${getTimelineColors(status, index).split(' ')[0]}`}>
+                    {STATUS_LABELS[status]}
+                  </h3>
+                  
+                  {isCurrent && (
+                    <div className="flex items-center gap-2 mt-2 text-[#A1A1AA] text-xs font-medium">
+                      <CircleDashed className="h-3.5 w-3.5 animate-spin text-[#F97316]" />
+                      Atualizando em tempo real...
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* CTA */}
-        <div className="mt-8 flex justify-center">
-          <button 
-            onClick={handleSimulateCheckout}
-            disabled={isProcessingCheckout}
-            className="group relative w-full bg-[#F97316] text-black font-black uppercase tracking-tighter skew-x-[-10deg] px-6 py-4 transition-all duration-200 hover:bg-[#EA580C] hover:-translate-y-1 shadow-[4px_4px_0px_0px_#27272A] hover:shadow-[6px_6px_0px_0px_#27272A] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#27272A] disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {/* Texto centralizado */}
-            <span className="block skew-x-[10deg] tracking-wide">
-              {isProcessingCheckout ? 'Aguardando...' : 'Testar Checkout'}
-            </span>
-          </button>
+        {/* Status Finalizado */}
+        <div className={`transition-all duration-1000 ${currentStatus === 'ENTREGUE' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+          <div className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold uppercase tracking-wider text-sm bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 mb-4">
+            <CheckCircle2 className="h-5 w-5" />
+            Pedido Entregue!
+          </div>
         </div>
+
+        {/* Botão Voltar */}
+        <button
+          onClick={onVoltar}
+          className="w-full flex items-center justify-center py-4 rounded-xl font-bold uppercase tracking-wider text-sm bg-[#18181B] text-[#FFFFFF] border border-[#27272A] hover:bg-[#27272A] hover:border-[#3F3F46] transition-all"
+        >
+          <ArrowLeft className="h-5 w-5 mr-2" />
+          Voltar ao Catálogo
+        </button>
 
       </div>
     </div>

@@ -12,13 +12,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.kafka.annotation.EnableKafka;
+import lombok.extern.slf4j.Slf4j;
+
 // Configuração centralizada do Kafka — Producer, Consumer e Tópicos
+@Slf4j
+@EnableKafka
 @Configuration
 public class KafkaConfig {
 
@@ -59,26 +66,32 @@ public class KafkaConfig {
 
     // Factory do Consumer para receber eventos JSON
     @Bean
-    public ConsumerFactory<String, PedidoCriadoEvent> consumerFactory() {
+    public ConsumerFactory<String, PedidoCriadoEvent> consumerFactory(com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "sportzone-group");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        // Permite deserializar o evento do pacote com.sportzone.event
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.sportzone.event");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, PedidoCriadoEvent.class.getName());
+        JsonDeserializer<PedidoCriadoEvent> jsonDeserializer = new JsonDeserializer<>(PedidoCriadoEvent.class, objectMapper, false);
+        jsonDeserializer.addTrustedPackages("*");
+        jsonDeserializer.setUseTypeHeaders(false);
 
-        return new DefaultKafkaConsumerFactory<>(props);
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), jsonDeserializer);
     }
 
     // Factory do Listener container para o @KafkaListener
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, PedidoCriadoEvent> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, PedidoCriadoEvent> kafkaListenerContainerFactory(com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
         ConcurrentKafkaListenerContainerFactory<String, PedidoCriadoEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory(objectMapper));
+
+        // Error handler que loga erros de deserialização visivelmente
+        factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) -> {
+            log.error("[KAFKA-ERROR] Falha ao processar mensagem do tópico {}: {}",
+                    record.topic(), exception.getMessage(), exception);
+        }, new FixedBackOff(1000L, 2)));
+
         return factory;
     }
 }
