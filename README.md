@@ -24,9 +24,7 @@ O **SportZone** é uma plataforma Web Full-Stack para venda de artigos esportivo
 
 Todos os documentos teóricos e de design exigidos estão centralizados neste repositório.
 
-1. **Relatório Técnico e Design System:** [Acessar PDF na pasta `/docs`](./docs/Relatorio_DesignSystem_Artefatos_SportZone.pdf)
-2. **Modelagem de Domínio:** Incluída no relatório técnico.
-3. **Protótipo de Alta Fidelidade (UI/UX):** [Acessar no Figma](https://glory-hello-96058735.figma.site/)
+1. **Todos os Documentos estão na pasta Docs
 
 ---
 
@@ -65,10 +63,10 @@ O fluxo do Pedido obedece a uma máquina de estados rigorosa: `PROCESSANDO_PAGAM
 * [Node.js](https://nodejs.org/) (v18+) instalado.
 
 ### Passo 1: Subir a Infraestrutura (Banco e Mensageria)
-Na raiz do projeto, suba os containers do PostgreSQL e do Apache Kafka executando o comando `docker-compose up -d` no seu terminal. Aguarde para que o broker do Kafka inicialize corretamente.
+suba os containers do PostgreSQL e do Apache Kafka executando o comando `docker-compose up -d` no seu terminal. Aguarde para que o broker do Kafka inicialize corretamente.
 
 ### Passo 2: Iniciar o Backend (Spring Boot)
-Abra um novo terminal, navegue até a pasta do backend (`cd backend`) e inicie a aplicação executando `mvn spring-boot:run` (ou `./mvnw spring-boot:run`). A API estará rodando em `http://localhost:8081`.
+Abra um novo terminal, navegue até a pasta do backend (`cd backend`) e inicie a aplicação com `mvn spring-boot:run` (ou `./mvnw spring-boot:run`). A API estará rodando em `http://localhost:8081`.
 
 ### Passo 3: Iniciar o Frontend (React)
 Abra outro terminal, navegue até a pasta do frontend (`cd frontend`), instale as dependências com `npm install` e inicie o servidor com `npm run dev`. O Frontend estará acessível em `http://localhost:5173`.
